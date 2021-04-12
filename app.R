@@ -21,11 +21,11 @@ ui <- fluidPage(theme = shinytheme("united"),
                                 choices=unique(student_corona_dk$region),
                                 selected= "Nordjylland"),
                     
-                    # selectInput("municipality", 
-                    #            label = "Municipality", 
-                    #          choices= student_corona_dk %>% filter('region' == 'Nordjylland') %>% 
-                    #           select('kom') #%>% distinct('kom')
-                    #          )
+                    
+                    selectInput("municipality", 
+                                label = "Municipality", 
+                                choices= c("")
+                    )
                   ),
                   mainPanel(
                     
@@ -34,7 +34,23 @@ ui <- fluidPage(theme = shinytheme("united"),
 )
 
 # Server
-server <- function(input, output) {
+server <- function(input, output,session) {
+  observe({
+    x <- input$region
+    
+    updateSelectInput(session, "municipality", choices = student_corona_dk %>% 
+                        filter(region == x) %>% 
+                        select(municipality))
+  })
+  
+  
+  
+  
+  
+  
+  
+  
+  
   
 }
 
