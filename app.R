@@ -29,7 +29,9 @@ ui <- fluidPage(theme = shinytheme("united"),
                   ),
                   mainPanel(
                     
-                  )
+                  ),
+                  tags$h3("Data obtained from Danmarks Statistik"),
+                  tags$h4(url)
                 ),
 )
 
