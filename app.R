@@ -6,11 +6,11 @@ ui <- fluidPage(
     sidebarPanel(
       
       
+    ),
+    mainPanel(
+      
     )
   ),
-  mainPanel(
-    
-  )
 )
 
 server <- function(input, output) {
