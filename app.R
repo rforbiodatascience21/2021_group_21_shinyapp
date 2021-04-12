@@ -11,6 +11,7 @@ curl::curl_download(url, destfile)
 student_corona_dk <- read_excel(destfile, 6)
 names(student_corona_dk) <- c("region", "municipality", "test_week", "total_students", "tested_students", "positive_students")
 
+
 # User Interface
 ui <- fluidPage(theme = shinytheme("united"),
                 titlePanel("Covid-19 cases among students in Denmark"),
@@ -39,20 +40,11 @@ ui <- fluidPage(theme = shinytheme("united"),
 server <- function(input, output,session) {
   observe({
     x <- input$region
-    
-    updateSelectInput(session, "municipality", choices = student_corona_dk %>% 
-                        filter(region == x) %>% 
-                        select(municipality))
+
+    updateSelectInput(session, "municipality", choices = c("All", unique(student_corona_dk %>% 
+                                                                           filter(region == "Nordjylland") %>% 
+                                                                           select(municipality))$municipality))
   })
-  
-  
-  
-  
-  
-  
-  
-  
-  
   
 }
 
