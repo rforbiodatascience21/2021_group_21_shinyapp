@@ -7,8 +7,15 @@ ui <- fluidPage(theme = shinytheme("united"),
   titlePanel("Covid-19 cases among students in Denmark"),
   sidebarLayout(
     sidebarPanel(
-      selectInput("region", label = "Region", choices=unique(df$region))
+      selectInput("region", 
+                  label = "Region", 
+                  choices=unique(df$region)),
       
+      selectInput("kom", 
+                  label = "Municipality", 
+                  choices= df %>% filter('region' == input$region) %>% 
+                    select('kom') %>% distinct()
+                    )
     ),
     mainPanel(
       
