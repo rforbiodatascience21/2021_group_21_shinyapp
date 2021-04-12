@@ -2,7 +2,7 @@ library(shiny)
 library(shinythemes)
 library(ggplot2)
 library(readxl)
-#library(tidyverse)
+library(tidyverse)
 
 # How to import data
 url <- "https://www.dst.dk/ext/2147486843/0/formid/Smitte-med-ny-coronavirus-blandt-elever-i-grundskolen-(excel)--xls"
@@ -17,13 +17,15 @@ ui <- fluidPage(theme = shinytheme("united"),
     sidebarPanel(
       selectInput("region", 
                   label = "Region", 
-                  choices=unique(df$region)),
+                  choices=unique(student_corona_dk$region),
+                  selected= "Nordjylland"),
+          
       
-      selectInput("kom", 
-                  label = "Municipality", 
-                  choices= df %>% filter('region' == input$region) %>% 
-                    select('kom') %>% distinct()
-                    )
+     # selectInput("kom", 
+      #            label = "Municipality", 
+        #          choices= student_corona_dk %>% filter('region' == 'Nordjylland') %>% 
+         #           select('kom') #%>% distinct('kom')
+          #          )
     ),
     mainPanel(
       
