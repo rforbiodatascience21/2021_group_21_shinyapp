@@ -1,10 +1,13 @@
 library(shiny)
+library(shinythemes)
+library(ggplot2)
+#library(tidyverse)
 
-ui <- fluidPage(
-  titlePanel(""),
+ui <- fluidPage(theme = shinytheme("united"),
+  titlePanel("Covid-19 cases among students in Denmark"),
   sidebarLayout(
     sidebarPanel(
-      
+      selectInput("region", label = "Region", choices=unique(df$region))
       
     ),
     mainPanel(
