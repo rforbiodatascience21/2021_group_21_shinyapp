@@ -37,8 +37,6 @@ ui <- fluidPage(theme = shinytheme("united"),
                     
                     tags$h5("Data obtained from Danmarks Statistik"),
                     
-                    tags$h6(url),
-                    
                     tags$style(type="text/css",
                                ".shiny-output-error { visibility: hidden; }",
                                ".shiny-output-error:before { visibility: hidden; }"
@@ -78,7 +76,7 @@ server <- function(input, output,session) {
                              guide = "legend")+
         theme_minimal() +
         labs(title = "Covid-19 Cases Among Students in Denmark",
-             caption = "Caption can be added") +
+             caption = url) +
         xlab("Date") +
         ylab("Total students")
   })
