@@ -37,7 +37,13 @@ ui <- fluidPage(theme = shinytheme("united"),
                     
                     tags$h5("Data obtained from Danmarks Statistik"),
                     
-                    tags$h6(url)
+                    tags$h6(url),
+                    
+                    tags$style(type="text/css",
+                               ".shiny-output-error { visibility: hidden; }",
+                               ".shiny-output-error:before { visibility: hidden; }"
+                    )
+                    
                   )
                   
                 ),
@@ -53,16 +59,23 @@ server <- function(input, output,session) {
                                                                            select(municipality))))
   })
   
-  
-
-  
     output$plot <- renderPlot({
-      student_corona_dk_filter <- student_corona_dk %>% 
-        filter(region==input$region & municipality==input$municipality)
+      
+      if (input$municipality == "All") {
+        student_corona_dk_filter <- student_corona_dk %>% 
+          filter(region==input$region)
+      } else {
+        student_corona_dk_filter <- student_corona_dk %>% 
+          filter(region==input$region & municipality==input$municipality)
+      }
 
       ggplot(student_corona_dk_filter, aes(x=date)) + 
-        geom_line(aes(y = tested_students), color="steelblue") +
-        geom_line(aes(y = positive_students), color="red") +
+        geom_line(aes(y = tested_students, color="royalblue3")) +
+        geom_line(aes(y = positive_students,color="red")) +
+        scale_color_identity(name = "Line",
+                             breaks = c("royalblue3", "red"),
+                             labels = c("Tested Students", "Positive Students"),
+                             guide = "legend")+
         theme_minimal() +
         labs(title = "Covid-19 Cases Among Students in Denmark",
              caption = "Caption can be added") +
@@ -70,6 +83,7 @@ server <- function(input, output,session) {
         ylab("Total students")
   })
 }
+
 
 # Create Shiny app ----
 shinyApp(ui = ui, server = server)
