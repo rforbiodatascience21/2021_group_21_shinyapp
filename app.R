@@ -62,41 +62,42 @@ server <- function(input, output,session) {
                                                                              filter(region == input$region) %>% 
                                                                              select(municipality))))
     }
-
+    
     updateSelectInput(session, "municipality", choices = c("All", unique(student_corona_dk %>% 
                                                                            filter(region == input$region) %>% 
                                                                            select(municipality))))
   })
   
-    output$plot <- renderPlot({
-      
-      if (input$municipality == "All" & input$region == "All") {
-        student_corona_dk_filter <- student_corona_dk
-      }
-      
-      if (input$municipality == "All" & input$region != "All") {
-        student_corona_dk_filter <- student_corona_dk %>% 
-          filter(region==input$region)
-      }
-      
-      if (input$municipality != "All" & input$region != "All") {
-        student_corona_dk_filter <- student_corona_dk %>% 
-          filter(region==input$region & municipality==input$municipality)
-      } 
-      
+  output$plot <- renderPlot({
+    
 
-      ggplot(student_corona_dk_filter, aes(x=date)) + 
-        geom_line(aes(y = tested_students, color="royalblue3")) +
-        geom_line(aes(y = positive_students,color="red")) +
-        scale_color_identity(name = "Line",
-                             breaks = c("royalblue3", "red"),
-                             labels = c("Tested Students", "Positive Students"),
-                             guide = "legend")+
-        theme_minimal() +
-        labs(title = "Covid-19 Cases Among Students in Denmark",
-             caption = url) +
-        xlab("Date") +
-        ylab("Total students")
+    if (input$municipality == "All" & input$region == "All") {
+      student_corona_dk_filter <- student_corona_dk
+    }
+    
+    if (input$municipality == "All" & input$region != "All") {
+      student_corona_dk_filter <- student_corona_dk %>% 
+        filter(region==input$region)
+    }
+    
+    if (input$municipality != "All" & input$region != "All") {
+      student_corona_dk_filter <- student_corona_dk %>% 
+        filter(region==input$region & municipality==input$municipality)
+    } 
+    
+    
+    ggplot(student_corona_dk_filter, aes(x=date)) + 
+      geom_line(aes(y = tested_students, color="royalblue3")) +
+      geom_line(aes(y = positive_students,color="red")) +
+      scale_color_identity(name = "Line",
+                           breaks = c("royalblue3", "red"),
+                           labels = c("Tested Students", "Positive Students"),
+                           guide = "legend")+
+      theme_minimal() +
+      labs(title = "Covid-19 Cases Among Students in Denmark",
+           caption = url) +
+      xlab("Date") +
+      ylab("Total students")
   })
 }
 
