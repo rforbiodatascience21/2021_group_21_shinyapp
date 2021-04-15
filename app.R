@@ -4,6 +4,8 @@ library(ggplot2)
 library(readxl)
 library(tidyverse)
 library(reshape2)
+library(rsconnect)
+
 
 # Import data
 url <- "https://www.dst.dk/ext/2147486843/0/formid/Smitte-med-ny-coronavirus-blandt-elever-i-grundskolen-(excel)--xls"
@@ -17,13 +19,13 @@ student_corona_dk <- student_corona_dk %>% mutate(date = as.Date(paste(test_week
 
 # User Interface
 ui <- fluidPage(theme = shinytheme("united"),
-                titlePanel("Covid-19 cases among students in Denmark"),
+                titlePanel("Covid-19 Cases Among Students in Denmark"),
                 sidebarLayout(
                   sidebarPanel(
                     selectInput("region", 
                                 label = "Region", 
-                                choices=unique(student_corona_dk$region),
-                                selected= "Nordjylland"),
+                                choices=c("All",unique(student_corona_dk$region)),
+                                selected= "All"),
                     
                     
                     selectInput("municipality", 
@@ -52,7 +54,16 @@ ui <- fluidPage(theme = shinytheme("united"),
 # Server
 server <- function(input, output,session) {
   observe({
+    
     x <- input$region
+    
+    if (x == "All") {
+      updateSelectInput(session, "municipality", choices = c("All"))
+    } else {
+      updateSelectInput(session, "municipality", choices = c("All", unique(student_corona_dk %>% 
+                                                                             filter(region == input$region) %>% 
+                                                                             select(municipality))))
+    }
 
     updateSelectInput(session, "municipality", choices = c("All", unique(student_corona_dk %>% 
                                                                            filter(region == input$region) %>% 
@@ -61,13 +72,20 @@ server <- function(input, output,session) {
   
     output$plot <- renderPlot({
       
-      if (input$municipality == "All") {
+      if (input$municipality == "All" & input$region == "All") {
+        student_corona_dk_filter <- student_corona_dk
+      }
+      
+      if (input$municipality == "All" & input$region != "All") {
         student_corona_dk_filter <- student_corona_dk %>% 
           filter(region==input$region)
-      } else {
+      }
+      
+      if (input$municipality != "All" & input$region != "All") {
         student_corona_dk_filter <- student_corona_dk %>% 
           filter(region==input$region & municipality==input$municipality)
-      }
+      } 
+      
 
       ggplot(student_corona_dk_filter, aes(x=date)) + 
         geom_line(aes(y = tested_students, color="royalblue3")) +
@@ -85,5 +103,8 @@ server <- function(input, output,session) {
 }
 
 
-# Create Shiny app ----
+# Create Shiny App
 shinyApp(ui = ui, server = server)
+
+
+# Publish at Shiny App
